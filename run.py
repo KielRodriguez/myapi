@@ -41,7 +41,7 @@ parse.add_argument('account', type=float, required=True)
 
 # Todo
 # shows a single todo item and lets you delete a todo item
-class Todo(Resource):
+class Expenses(Resource):
     def get(self, todo_id):
         abort_if_todo_doesnt_exist(todo_id)
         return EXPENSES[todo_id]
@@ -59,7 +59,7 @@ class Todo(Resource):
 
 # TodoList
 # show a list of all todos, and lets you POS to add new tasks
-class TodoList(Resource):
+class ExpensesList(Resource):
     def get(self):
         return EXPENSES
 
@@ -80,8 +80,8 @@ class TodoList(Resource):
 ##
 ## Actually setup the Api resource routing here
 ##
-api.add_resource(TodoList, '/todos')
-api.add_resource(Todo, '/todos/<todo_id>')
+api.add_resource(ExpensesList, '/expenses')
+api.add_resource(Expenses, '/expenses/<todo_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
