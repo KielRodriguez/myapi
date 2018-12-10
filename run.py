@@ -80,8 +80,8 @@ class ExpensesList(Resource):
 ##
 ## Actually setup the Api resource routing here
 ##
-api.add_resource(ExpensesList, '/expenses')
-api.add_resource(Expenses, '/expenses/<todo_id>')
+api.add_resource(ExpensesList, '/api/expenses')
+api.add_resource(Expenses, '/api/expenses/<todo_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
