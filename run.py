@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, request
 from flask_restful import reqparse, abort, Resource, Api
 
@@ -6,22 +8,19 @@ api = Api(app)
 
 EXPENSES = {
 
-    {
-        '_id': 1,
+    1: {  
         'description': 'luz', 
         'quantity': 1,
         'account': 100.0,
         'purchase_date': '01-12-2018'
     },
-    {
-        '_id': 2,
+    2: {
         'description': 'garrafon epura', 
         'quantity': 1,
         'account': 40.0,
         'purchase_date': '01-12-2018'
     },
-    {
-        '_id': 3,
+    3: {
         'description': 'articulos de limpieza', 
         'quantity': 1,
         'account': 45.3, 
@@ -35,7 +34,9 @@ def abort_if_todo_doesnt_exist(todo_id):
         abort(404, message="Todo {} doesn't exist".format(todo_id))
 
 parse = reqparse.RequestParser()
-parse.add_argument('task')
+parse.add_argument('description', type=str, required=True)
+parse.add_argument('quantity', type=int, required=True)
+parse.add_argument('account', type=float, required=True)
 
 
 # Todo
@@ -43,31 +44,37 @@ parse.add_argument('task')
 class Todo(Resource):
     def get(self, todo_id):
         abort_if_todo_doesnt_exist(todo_id)
-        return TODOS[todo_id]
+        return EXPENSES[todo_id]
 
     def delete(self, todo_id):
         abort_if_todo_doesnt_exist(todo_id)
-        del TODOS[todo_id]
+        del EXPENSES[todo_id]
         return '', 204
 
     def put(self, todo_id):
         args = parser.parse_args()
         task = {'task': args['task']}
-        TODOS[todo_id] = task
+        EXPENSES[todo_id] = task
         return task, 201
 
 # TodoList
 # show a list of all todos, and lets you POS to add new tasks
 class TodoList(Resource):
     def get(self):
-        return TODOS
+        return EXPENSES
 
     def post(self):
         args = parse.parse_args()
-        todo_id = int(max(TODOS.keys()).lstrip('todo')) + 1
-        todo_id = 'todo%i' % todo_id
-        TODOS[todo_id] = {'task': args['task']}
-        return TODOS[todo_id], 201
+        _id = max(EXPENSES.keys()) + 1
+
+        EXPENSES[_id] = {
+            'description': args['description'],
+            'quantity': args['quantity'],
+            'account': args['account'],
+            'purchase_date': datetime.now().strftime("%d-%m-%Y")
+        }
+
+        return EXPENSES[_id], 201
 
 
 ##
